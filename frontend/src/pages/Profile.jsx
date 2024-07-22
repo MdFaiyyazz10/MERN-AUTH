@@ -5,7 +5,7 @@ import {getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/st
 import {app} from '../firebase.js'
 import axios from 'axios'
 import { useDispatch } from 'react-redux'; 
-import { updateUserFailed, updateUserStart, updateUserSuccess , deleteUserStart , deleteUserSuccess , deleteUserFailed } from '../redux/user/userSlice.js';
+import { updateUserFailed, updateUserStart, updateUserSuccess , deleteUserStart , deleteUserSuccess , deleteUserFailed, signOut } from '../redux/user/userSlice.js';
 import toast from 'react-hot-toast';
 // import Cookies from 'js-cookie';
 
@@ -174,6 +174,20 @@ const Profile = () => {
     }
   } 
 
+
+  const handleSignOut = async() => {
+    try {
+      dispatch(signOut())
+      const res = await fetch(`http://localhost:4000/api/v1/auth/signout`);
+      const data = await res.json()
+      console.log(data)
+
+      toast.success(data.message)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7' >Profile</h1>
@@ -202,7 +216,7 @@ const Profile = () => {
       </form>
       <div className='flex justify-between mt-5'>
         <span className='text-red-700 cursor-pointer' onClick={handleDeleteAccount} >Delete Account</span>
-        <span className='text-red-700 cursor-pointer'>Sign out</span>
+        <span className='text-red-700 cursor-pointer' onClick={handleSignOut}>Sign out</span>
       </div>
       <p className='text-red-700 mt-5'>{error && "Something went Wrong" }</p>
       <p className='text-green-700 mt-5'>{updateSuccess && "User  Updated Succesfully" }</p>
